@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 {
     if (argc != 4)
     {
-        printf("usage: program %s input_file output_file output_file_asm", argv[0]);
+        printf("usage: program %s input_file output_file output_file_asm\n", argv[0]);
         return 1;
     }
 
