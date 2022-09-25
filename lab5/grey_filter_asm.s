@@ -15,6 +15,7 @@ grey_filter_asm:
 //      w8 - min_c
 //      w9 - max_c
 //      w10 - i
+        stp     x29, x30, [sp, #-16]!
         mov     x5, x0
         mov     x6, x1
         add     x4, x0, x2
@@ -48,6 +49,7 @@ grey_filter_asm:
         b       1b
 4:
         mov     x0, #0
+        ldp     x29, x30, [sp], #16
         ret
         .size   grey_filter_asm, .-grey_filter_asm
         .global min_
@@ -57,6 +59,7 @@ min_:
 //      x1 - result
 //      x2 - 1st number
 //      x3 - 2nd number
+        stp     x29, x30, [sp, #-16]!
         cmp     x2, x3
         ble     1f
         b       2f
@@ -67,6 +70,7 @@ min_:
         mov     x1, x3
 3:
         mov     x0, #0
+        ldp     x29, x30, [sp], #16
         ret
         .size   min_, .-min_
         .global max_
@@ -76,6 +80,7 @@ max_:
 //      x1 - result
 //      x2 - 1st number
 //      x3 - 2nd number
+        stp     x29, x30, [sp, #-16]!
         cmp     x2, x3
         bge     1f
         b       2f
@@ -86,5 +91,6 @@ max_:
         mov     x1, x3
 3:
         mov     x0, #0
+        ldp     x29, x30, [sp], #16
         ret
         .size   max_, .-max_
