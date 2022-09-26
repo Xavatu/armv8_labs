@@ -15,10 +15,18 @@ grey_filter_asm:
 //      w8 - min_c
 //      w9 - max_c
 //      w10 - i
-        stp     x29, x30, [sp, #-16]!
+        stp     x29, x30, [sp, #-40]!
+        mov     x29, sp
+        str     x0, [x29, #16]
+        str     x1, [x29, #24]
+        str     x2, [x29, #32]
         mov     x5, x0
-        mov     x6, x1
-        add     x4, x0, x2
+        mov     x4, #6
+        sdiv    x3, x2, x4 //size/6
+        add     x6, x1, x3 //res_img + size/6
+        mov     x4, #2
+        sdiv    x2, x2, x4
+        add     x4, x0, x2 //img + size/2
 1:
         cmp     x5, x4
         beq     4f
@@ -48,8 +56,22 @@ grey_filter_asm:
         add     x6, x6, #1
         b       1b
 4:
+        ldr     x0, [x29, #16]
+        ldr     x1, [x29, #24]
+        ldr     x2, [x29, #32]
+        add     x3, x0, x2
+        cmp     x4, x3
+        beq     5f
+        mov     x4, #2
+        sdiv    x3, x2, x4
+        add     x5, x0, x3
+        mov     x6, x1
+        mov     x4, x0
+        add     x4, x0, x2
+        b       1b
+5:
         mov     x0, #0
-        ldp     x29, x30, [sp], #16
+        ldp     x29, x30, [sp], #40
         ret
         .size   grey_filter_asm, .-grey_filter_asm
         .global min_
