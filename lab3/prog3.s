@@ -27,15 +27,17 @@ _start:
     mov     x1, #8
     mul     x0, x0, x1
     add     x0, x0, #8
-    ldr     x0, [sp, x0]
+    add     x0, sp, x0
     adr     x8, filename
+    mov     x9, x0
 get_filename_env:
+    mov     x0, x9
     add     x0, x0, #8
+    mov     x9, x0
     ldr     x1, [x0]
     cmp     x1, #0
     beq     7f
-    mov     w2, wzr
-    strb    w2, [x1, #8]
+    mov     x2, x8
     bl      string_cmp
     cmp     x0, #1
     bne     get_filename_env
@@ -304,14 +306,16 @@ string_cmp:
     //x2 - string 2
     stp x29, x30, [sp, #-16]!
     mov x0, #1
+    mov x11, #0
 1:
-    ldrb w3, [x1]
-    ldrb w4, [x2]
+    ldrb w3, [x1, x11]
+    ldrb w4, [x2, x11]
     cmp  w3, wzr
     beq 3f
     cmp w4, wzr
     beq 3f
     cmp w3, w4
+    add x11, x11, #1
     beq 1b
     mov x0, #0
 3:
