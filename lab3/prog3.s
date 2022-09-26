@@ -2,12 +2,6 @@
 //  Remove symbols in even positions
 //  From the keyboard to the specified file
     .data
-errmes1:
-    .string	"Usage: "
-    .equ	errlen1, .-errmes1
-errmes2:
-    .ascii	" filename\n"
-    .equ    errlen2, .-errmes2
 existmes:
     .ascii  "Rewrite? (y, n)\n"
     .equ    existlen, .-existmes
@@ -48,16 +42,6 @@ get_filename_env:
     cbz     w3, 2f
     add     x2, x2, #1
     b       0b
-1:
-    mov	x8, #64
-    svc	#0
-    mov	x0, #2
-    adr	x1, errmes2
-    mov	x2, errlen2
-    mov	x8, #64
-    svc	#0
-    mov	x0, #1
-    b   4f
 2:
 //  Open file
     mov x0, x1
