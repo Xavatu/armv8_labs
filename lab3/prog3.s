@@ -41,14 +41,13 @@ get_filename_env:
     bl      string_cmp
     cmp     x0, #1
     bne     get_filename_env
+    mov     x2, #0
 0:
 //  Count x2 - len of progname
-    ldr     x0, [sp]
-
-    strb    w3, [x1, x2]
-    cbz     w3, 1f
+    ldrb    w3, [x1, x2]
+    cbz     w3, 2f
     add     x2, x2, #1
-    b 0b
+    b       0b
 1:
     mov	x8, #64
     svc	#0
@@ -61,7 +60,7 @@ get_filename_env:
     b   4f
 2:
 //  Open file
-    ldr x0, [sp, #32]
+    mov x0, x1
     mov x20, x0
     mov x1, x0 //Adress of filename
     mov x0, #-100
