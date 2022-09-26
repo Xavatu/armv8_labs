@@ -43,9 +43,11 @@ get_filename_env:
     bne     get_filename_env
 0:
 //  Count x2 - len of progname
-    strb w3, [x1, x2]
-    cbz w3, 1f
-    add x2, x2, #1
+    ldr     x0, [sp]
+
+    strb    w3, [x1, x2]
+    cbz     w3, 1f
+    add     x2, x2, #1
     b 0b
 1:
     mov	x8, #64
@@ -308,14 +310,15 @@ string_cmp:
     mov x0, #1
     mov x11, #0
 1:
-    ldrb w3, [x1, x11]
+    ldrb w3, [x1]
     ldrb w4, [x2, x11]
+    add x1, x1, #1
+    add x11, x11, #1
     cmp  w3, wzr
     beq 3f
     cmp w4, wzr
     beq 3f
     cmp w3, w4
-    add x11, x11, #1
     beq 1b
     mov x0, #0
 3:
