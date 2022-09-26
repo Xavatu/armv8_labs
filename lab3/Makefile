@@ -20,4 +20,4 @@ $(EXE): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $@
 
 .s.o:
-	$(AS) $(ASFLAGS) $< -o $@
+	$(AS) $(ASFLAGS) $< -o  $@

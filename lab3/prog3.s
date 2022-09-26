@@ -9,8 +9,10 @@ errmes2:
     .ascii	" filename\n"
     .equ    errlen2, .-errmes2
 existmes:
-    .ascii "Rewrite? (y, n)\n"
+    .ascii  "Rewrite? (y, n)\n"
     .equ    existlen, .-existmes
+filename:
+    .asciz  "FILENAME"
 fd:
     .skip   8
 ans:
@@ -21,18 +23,22 @@ ans:
     .global _start
     .type	_start, %function
 _start:
-//  Output: "Usage: "
-    ldr	x0, [sp]
-    cmp	x0, #2
-    beq	2f
-    mov	x0, #2
-    adr	x1, errmes1
-    mov	x2, errlen1
-    mov	x8, #64
-    svc	#0
-    mov	x0, #2
-    ldr	x1, [sp, #16]
-    mov	x2, #0
+    ldr     x0, [sp]
+    mov     x1, #8
+    mul     x0, x0, x1
+    add     x0, x0, #8
+    ldr     x0, [sp, x0]
+    adr     x8, filename
+get_filename_env:
+    add     x0, x0, #8
+    ldr     x1, [x0]
+    cmp     x1, #0
+    beq     7f
+    mov     w2, wzr
+    strb    w2, [x1, #8]
+    bl      string_cmp
+    cmp     x0, #1
+    bne     get_filename_env
 0:
 //  Count x2 - len of progname
     strb w3, [x1, x2]
@@ -51,7 +57,7 @@ _start:
     b   4f
 2:
 //  Open file
-    ldr x0, [sp, #16]
+    ldr x0, [sp, #32]
     mov x20, x0
     mov x1, x0 //Adress of filename
     mov x0, #-100
@@ -291,3 +297,24 @@ printerror:
     svc #0
     ret
     .size printerror, .-printerror
+    .global string_cmp
+    .type   string_cmp, %function
+string_cmp:
+    //x1 - string 1
+    //x2 - string 2
+    stp x29, x30, [sp, #-16]!
+    mov x0, #1
+1:
+    ldrb w3, [x1]
+    ldrb w4, [x2]
+    cmp  w3, wzr
+    beq 3f
+    cmp w4, wzr
+    beq 3f
+    cmp w3, w4
+    beq 1b
+    mov x0, #0
+3:
+    ldp x29, x30, [sp], #16
+    ret
+    .size   string_cmp, .-string_cmp
